@@ -12,10 +12,10 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-    console.log('req' + req.body)
+    console.log('req ' + JSON.stringify(req.body))
     // read current page from file
     let oldPage = JSON.parse(fs.readFileSync('current-page.json', {encoding: 'utf-8'}))
-    console.log('storage' + oldPage)
+    console.log('storage ' + JSON.stringify(oldPage))
     
     let page = 0
     let recievedPage = 0
@@ -27,8 +27,8 @@ app.post('/', (req, res) => {
         recievedPage = req.body.page
     }
     // if the recieved page number is greater than existing one, update it.
-    if (req.body.page > oldPage.page) {
-        page = req.body.page
+    if (recievedPage > oldPage.page) {
+        page = recievedPage
     }
     else {
         page = oldPage.page
@@ -36,12 +36,12 @@ app.post('/', (req, res) => {
     // new data
     let newPage = {
         book: req.body.book,
-        page: recievedPage
+        page: page
     }
     //store new data
     fs.writeFile('current-page.json', JSON.stringify(newPage), function (err) {
         if (err) throw err;
-        console.log('Saved!' + newPage);
+        console.log('Saved!' + JSON.stringify(newPage));
     })
     // send the updated page
     res.json(newPage)
